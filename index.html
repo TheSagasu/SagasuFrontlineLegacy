@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      code {
+        font-family: "Courier New", Courier, monospace;
+        background-color: rgba(0, 0, 0, 0.1);
+        border: 1px solid grey;
+      }
+      em {
+        background-color: greenyellow;
+      }
+      blockquote {
+        background-color: antiquewhite;
+        font-family: Georgia, "Times New Roman", Times, serif;
+      }
+      footer {
+        color: grey;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 12px;
+      }
+      footer a {
+        color: goldenrod;
+      }
+    </style>
+    <script>
+      function toHHMMSS(input) {
+        var sec_num = parseInt(input, 10); // don't forget the second param
+        var hours = Math.floor(sec_num / 3600);
+        var minutes = Math.floor((sec_num - hours * 3600) / 60);
+        var seconds = sec_num - hours * 3600 - minutes * 60;
+
+        if (hours < 10) {
+          hours = "0" + hours;
+        }
+        if (minutes < 10) {
+          minutes = "0" + minutes;
+        }
+        if (seconds < 10) {
+          seconds = "0" + seconds;
+        }
+        return hours + ":" + minutes + ":" + seconds;
+      }
+    </script>
+    <script>
+      async function search() {
+        const { value } = document.getElementById("search-input");
+        const response = await (
+          await fetch(
+            `https://sagasu.x86.app/api/dialogs/search?from=0&size=20&keyword=${value}`
+          )
+        ).json();
+
+        const resultElement = document.getElementById("result");
+        const responseTimeElement = document.getElementById("response-time");
+
+        responseTimeElement.innerHTML =
+          `搜索耗时<code>${response.cost}</code>毫秒, ` +
+          `查找到<code>${response.total}</code>条数据`;
+
+        resultElement.innerHTML = response.results
+          .map((result) => {
+            const { begin, end } = result.info;
+            const { content } = result.search.highlight;
+            const { filename, remark } = result.info.file;
+            return `
+            <div id="single-repeat">
+                <blockquote>
+                    ${content}
+                </blockquote>
+                <ul>
+                    <li>文件名: <code>${filename}</code></li>
+                    <li>文件备注: <code>${remark}</code></li>
+                    <li>${toHHMMSS(begin / 1000)} - ${toHHMMSS(end / 1000)}</li>
+                </ul>
+            </div>
+          `;
+          })
+          .reduce((previous, current) => previous + current);
+      }
+    </script>
+  </head>
+  <title>动漫台词搜索引擎</title>
+  <body>
+    <h1>动漫台词搜索引擎</h1>
+    <div style="background-color: azure">
+      <p>
+        <del>这个网页是"朋友学了三年前端"系列作品</del>
+        <br />新界面在写了在写了
+      </p>
+      <p>
+        觉得搜索不准, 台词不全? 赶快加群
+        <a href="https://jq.qq.com/?_wv=1027&k=aUDAIJkP">
+          [混淆的魔法]
+          <code> 879471303 </code>
+        </a>
+        <br />
+        <del>总而言之加群就好了</del>
+      </p>
+    </div>
+    <b>台词内容:</b>
+    <input id="search-input" />
+    <button onclick="search()">搜索</button>
+    <hr>
+    <div>
+      <div id="response-time"></div>
+      <div id="result"></div>
+    </div>
+  </body>
+  <footer>
+    <p>
+      <a href="https://github.com/TheSagasu">Project Sagasu</a> 2021,
+      <b>all rights reserved.</b>
+    </p>
+    <p>
+      Made by <a href="https://elastic.co">ElasticSearch</a>,
+      <a href="https://nestjs.com">NestJS</a> and <b>heart</b>
+    </p>
+  </footer>
+</html>
