@@ -20,14 +20,22 @@
       }
       footer {
         color: grey;
-        font-family: 'Courier New', Courier, monospace;
+        font-family: "Courier New", Courier, monospace;
         font-size: 12px;
       }
       footer a {
         color: goldenrod;
       }
+      footer .friend-link {
+        color: black;
+        font-size: 15px;
+      }
     </style>
     <script>
+      /**
+       * @param {Number} input
+       * @returns {String}
+       */
       function toHHMMSS(input) {
         var sec_num = parseInt(input, 10); // don't forget the second param
         var hours = Math.floor(sec_num / 3600);
@@ -59,15 +67,15 @@
         const responseTimeElement = document.getElementById("response-time");
 
         responseTimeElement.innerHTML =
-          `搜索耗时<code>${response.cost}</code>毫秒, ` +
-          `查找到<code>${response.total}</code>条数据`;
+          /* html */
+          `搜索耗时<code>${response.cost}</code>毫秒, 查找到<code>${response.total}</code>条数据`;
 
         resultElement.innerHTML = response.results
           .map((result) => {
             const { begin, end } = result.info;
             const { content } = result.search.highlight;
             const { filename, remark } = result.info.file;
-            return `
+            return /*html*/ `
             <div id="single-repeat">
                 <blockquote>
                     ${content}
@@ -105,20 +113,24 @@
     <b>台词内容:</b>
     <input id="search-input" />
     <button onclick="search()">搜索</button>
-    <hr>
+    <hr />
     <div>
       <div id="response-time"></div>
       <div id="result"></div>
     </div>
   </body>
   <footer>
+    <p class="friend-link">
+      <b>友情链接:</b>
+      <a href="https://www.kissacg.org/">KissACG-MAD/AMV素材库</a>
+    </p>
     <p>
       <a href="https://github.com/TheSagasu">Project Sagasu</a> 2021,
-      <b>all rights reserved.</b>
+      <strong>all rights reserved.</strong>
     </p>
     <p>
       Made by <a href="https://elastic.co">ElasticSearch</a>,
-      <a href="https://nestjs.com">NestJS</a> and <b>heart</b>
+      <a href="https://nestjs.com">NestJS</a> and <strong>☕</strong>
     </p>
   </footer>
 </html>
